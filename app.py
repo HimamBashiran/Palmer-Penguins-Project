@@ -1,8 +1,8 @@
 import streamlit as st
-from modules.input_handler import InputHandler
-from modules.encoder import Encoder
-from modules.model_loader import ModelLoader
-from modules.predictor import Predictor
+from input_handler import InputHandler
+from encoder import Encoder
+from model_loader import ModelLoader
+from predictor import Predictor
 
 # Header
 st.write("""
