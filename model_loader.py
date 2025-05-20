@@ -5,10 +5,11 @@ from sklearn.ensemble import RandomForestClassifier
 
 class ModelLoader:
     def __init__(self, model_path):
-        self.model_path = model_path
-        self.model = None
+        self.model_path = model_path  # Lokasi file model
+        self.model = None  # Menyimpan objek model
 
     def build_model(self):
+        # Membaca data dan membangun model jika file model tidak tersedia
         df = pd.read_csv("C:/Users/User/PASD/Dataset/penguins_cleaned.csv")
         target = 'species'
         encode = ['sex', 'island']
@@ -33,6 +34,7 @@ class ModelLoader:
         return model
 
     def load_model(self):
+        # Memuat model dari file, atau membangun ulang jika belum ada
         if not os.path.exists(self.model_path):
             print(f"Model tidak ditemukan. Membangun model baru di {self.model_path}...")
             self.model = self.build_model()

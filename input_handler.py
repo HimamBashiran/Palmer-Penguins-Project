@@ -3,10 +3,11 @@ import pandas as pd
 
 class InputHandler:
     def __init__(self):
-        self.uploaded_file = None
-        self.input_df = None
+        self.uploaded_file = None  # Menyimpan file yang diunggah
+        self.input_df = None  # Menyimpan DataFrame input pengguna
 
     def user_input_features(self):
+        # Mengambil input dari sidebar untuk tiap fitur
         island = st.sidebar.selectbox('Island', ('Biscoe', 'Dream', 'Torgersen'))
         sex = st.sidebar.selectbox('Sex', ('male', 'female'))
         bill_length_mm = st.sidebar.slider('Bill length (mm)', 32.1, 59.6, 43.9)
@@ -14,6 +15,7 @@ class InputHandler:
         flipper_length_mm = st.sidebar.slider('Flipper length (mm)', 172.0, 231.0, 201.0)
         body_mass_g = st.sidebar.slider('Body mass (g)', 2700.0, 6300.0, 4207.0)
 
+        # Menggabungkan input ke dalam DataFrame
         data = {
             'island': island,
             'bill_length_mm': bill_length_mm,
@@ -25,6 +27,7 @@ class InputHandler:
         return pd.DataFrame(data, index=[0])
 
     def load_input(self):
+        # Memuat file jika pengguna mengunggah, atau gunakan input manual
         self.uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
         if self.uploaded_file is not None:
             self.input_df = pd.read_csv(self.uploaded_file)
