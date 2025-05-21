@@ -1,28 +1,38 @@
 import pandas as pd
+from config import DATASET_PATH, ENCODE_COLUMNS
 
-# Kelas untuk melakukan encoding data input pengguna agar sesuai dengan format model
 class Encoder:
-    def __init__(self, input_df, dataset_path):
-        self.input_df = input_df  # Data input dari pengguna
-        self.dataset_path = dataset_path  # Path ke dataset utama
-        self.encoded_df = None  # Menyimpan hasil encoding
+    def __init__(self, input_df):
+        self.input_df = input_df.copy()
+        self.df_raw = pd.read_csv(DATASET_PATH)
+
+    def _drop_label_column(self, df):
+        """Menghapus kolom target label jika ada (default: 'species')."""
+        if 'species' in df.columns:
+            return df.drop(columns=['species'])
+        return df
+
+    def _one_hot_encode(self, df):
+        """Melakukan one-hot encoding untuk kolom kategorikal."""
+        for col in ENCODE_COLUMNS:
+            if col in df.columns:
+                dummies = pd.get_dummies(df[col], prefix=col)
+                df = pd.concat([df.drop(columns=[col]), dummies], axis=1)
+        return df
 
     def encode_input(self):
-        # Membaca dataset
-        penguins_raw = pd.read_csv(self.dataset_path) 
-        penguins = penguins_raw.drop(columns=['species']) # Menghapus kolom target 'species' karena tidak dibutuhkan untuk encoding
-        
-        # Menggabungkan input pengguna dengan dataset untuk memastikan encoding konsisten
-        df = pd.concat([self.input_df, penguins], axis=0)
+        # Buang kolom label dari input pengguna juga
+        input_clean = self._drop_label_column(self.input_df)
 
-        # Melakukan one-hot encoding pada kolom kategorikal
-        encode = ['sex', 'island']
-        for col in encode:
-            # Membuat kolom dummy untuk setiap kategori
-            dummy = pd.get_dummies(df[col], prefix=col)
-            df = pd.concat([df, dummy], axis=1) # Gabungkan dengan dataframe utama
-            del df[col] # Hapus kolom asli karena sudah di-encode
+        # Buang kolom label dari data asli
+        df_raw_clean = self._drop_label_column(self.df_raw)
 
-        # Mengambil kembali hanya baris input pengguna setelah encoding
-        self.encoded_df = df[:1]
-        return self.encoded_df # Kembalikan DataFrame yang sudah diencoding
+        # Gabungkan input user dengan data asli
+        df_combined = pd.concat([input_clean, df_raw_clean], axis=0)
+
+        # One-hot encoding
+        df_encoded = self._one_hot_encode(df_combined)
+
+        # Ambil hanya baris pertama (baris user input)
+        return df_encoded.iloc[:1]
+
