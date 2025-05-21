@@ -4,7 +4,7 @@ from encoder import Encoder
 from model_loader import ModelLoader
 from predictor import Predictor
 
-# Header aplikasi
+# Menampilkan header aplikasi di halaman utama Streamlit
 st.write("""
 # Prediksi Spesies Penguin Palmer
 
@@ -15,29 +15,27 @@ Aplikasi yang akan membantu kamu memprediksi spesies penguin berdasarkan ciri-ci
 Data: [Palmer Penguins - Kaggle](https://www.kaggle.com/datasets/ashkhagan/palmer-penguins-datasetalternative-iris-dataset/data)
 """)
 
-# Sidebar untuk input dari pengguna
+# Membuat header di sidebar untuk input dari pengguna
 st.sidebar.header('Fitur Input Variabel')
 st.sidebar.markdown("Silakan masukkan detail karakteristik penguin di bawah ini untuk memprediksi spesiesnya.")
 
-# Mengambil input pengguna
-input_handler = InputHandler()
-input_df = input_handler.load_input()
+input_handler = InputHandler() # Membuat instance dari kelas InputHandler untuk menangani input pengguna
+input_df = input_handler.load_input() # Mengambil input pengguna
 
-# Melakukan encoding pada input pengguna
+# Melakukan encoding pada input pengguna agar sesuai dengan format model
 encoder = Encoder(input_df, 'C:/Users/User/PASD/Dataset/penguins_cleaned.csv')
 df = encoder.encode_input()
 
-# Menampilkan input yang dimasukkan pengguna
+# Menampilkan input yang telah diolah kepada pengguna di halaman utama
 st.subheader('Fitur Input Pengguna')
 st.write(df)
 
-# Memuat model
+# Membuat instance dari kelas ModelLoader untuk memuat model machine learning
 model_loader = ModelLoader('penguins_clf.pkl')
-model = model_loader.load_model()
+model = model_loader.load_model() # Memuat model klasifikasi dari file pickle
 
-# Melakukan prediksi
-predictor = Predictor(model, df)
-prediction, prediction_proba = predictor.predict()
+predictor = Predictor(model, df) # Membuat instance dari kelas Predictor untuk melakukan prediksi
+prediction, prediction_proba = predictor.predict() # Melakukan prediksi spesies penguin serta mendapatkan probabilitasnya
 
-# Menampilkan hasil prediksi
+# Menampilkan hasil prediksi dan probabilitas kepada pengguna
 predictor.show_result(prediction, prediction_proba)
