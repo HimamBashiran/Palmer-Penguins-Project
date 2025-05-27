@@ -1,9 +1,6 @@
 # Mengimpor library Streamlit dan class dari modul lain
 import streamlit as st
-from input_handler import InputHandler
-from encoder import Encoder
-from model_loader import ModelLoader
-from predictor import Predictor
+from models import InputHandler, Encoder, ModelLoader, Predictor
 
 # Judul website
 st.title("\U0001F427 Aplikasi Prediksi Spesies Penguin")
